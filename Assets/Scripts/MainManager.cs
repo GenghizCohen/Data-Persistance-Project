@@ -11,6 +11,7 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text highScoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
@@ -18,8 +19,23 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
-    
+    private string highScorePlayer;
+    private int highScoreScore;
+
+
     // Start is called before the first frame update
+
+    private void Awake()
+    {
+        if (GameManager.gameManager.highScorePlayerName != null && GameManager.gameManager.highScoreTotalScore != null)
+        {
+            highScorePlayer = GameManager.gameManager.highScorePlayerName;
+            highScoreScore = GameManager.gameManager.highScoreTotalScore;
+            UpdateHighscoreText(highScorePlayer, highScoreScore);
+        }
+
+    }
+
     void Start()
     {
         const float step = 0.6f;
@@ -57,7 +73,9 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                //going back to menu
+                //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                SceneManager.LoadScene(0);
             }
         }
     }
@@ -68,9 +86,15 @@ public class MainManager : MonoBehaviour
         ScoreText.text = $"Score : {m_Points}";
     }
 
+    public void UpdateHighscoreText(string player, int highscore)
+    {
+        highScoreText.text = "Best Score: " + player + ": " + highscore;
+    }
+
     public void GameOver()
     {
+        GameManager.gameManager.UpdateCurrentTotalScore(m_Points);
         m_GameOver = true;
-        GameOverText.SetActive(true);
+        GameOverText.SetActive(true);       
     }
 }
